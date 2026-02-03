@@ -13,13 +13,17 @@ const DAILY_VALUES = {
 function NutritionPanelInner({ detectedFruits }) {
   const [nutritionData, setNutritionData] = useState({})
 
+  // Stable key: sorted unique fruit names so the effect only re-runs when
+  // the set of detected fruits actually changes, not on every frame.
+  const uniqueFruits = useMemo(() => [...new Set(detectedFruits)].sort(), [detectedFruits])
+  const fruitsKey = uniqueFruits.join(',')
+
   useEffect(() => {
-    if (detectedFruits.length === 0) {
+    if (uniqueFruits.length === 0) {
       setNutritionData({})
       return
     }
 
-    const uniqueFruits = [...new Set(detectedFruits)]
     let cancelled = false
 
     const timer = setTimeout(async () => {
@@ -37,7 +41,7 @@ function NutritionPanelInner({ detectedFruits }) {
       cancelled = true
       clearTimeout(timer)
     }
-  }, [detectedFruits])
+  }, [fruitsKey])
 
   const totals = useMemo(() => {
     const result = {

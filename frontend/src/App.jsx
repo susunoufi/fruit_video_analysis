@@ -20,6 +20,8 @@ function App() {
     fpsLimit,
     setFpsLimit,
     processingTime,
+    webcamReady,
+    onWebcamReady,
     startStreaming,
     stopStreaming,
   } = useWebcam()
@@ -46,10 +48,12 @@ function App() {
             webcamRef={webcamRef}
             isStreaming={isStreaming}
             detectionResult={detectionResult}
+            onWebcamReady={onWebcamReady}
           />
 
           <DetectionControls
             isStreaming={isStreaming}
+            webcamReady={webcamReady}
             confidence={confidence}
             setConfidence={setConfidence}
             fpsLimit={fpsLimit}

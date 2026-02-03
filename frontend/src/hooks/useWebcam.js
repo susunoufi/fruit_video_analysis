@@ -13,8 +13,15 @@ export function useWebcam() {
   const [confidence, setConfidence] = useState(0.75)
   const [fpsLimit, setFpsLimit] = useState(15)
   const [processingTime, setProcessingTime] = useState(0)
+  const [webcamReady, setWebcamReady] = useState(false)
+
+  const onWebcamReady = useCallback(() => {
+    setWebcamReady(true)
+  }, [])
 
   const startStreaming = useCallback(() => {
+    if (!webcamReady) return
+
     socketRef.current = createDetectionSocket({
       onResult: (data) => {
         setDetectionResult(data)
@@ -24,7 +31,7 @@ export function useWebcam() {
       onStatusChange: setConnectionStatus,
     })
     setIsStreaming(true)
-  }, [])
+  }, [webcamReady])
 
   const stopStreaming = useCallback(() => {
     if (intervalRef.current) {
@@ -40,14 +47,17 @@ export function useWebcam() {
   }, [])
 
   useEffect(() => {
-    if (!isStreaming) return
+    if (!isStreaming || !webcamReady) return
 
     const captureInterval = Math.round(1000 / fpsLimit)
 
     intervalRef.current = setInterval(() => {
       if (waitingForResponse.current) return
 
-      const screenshot = webcamRef.current?.getScreenshot()
+      const webcam = webcamRef.current
+      if (!webcam || !webcam.video || webcam.video.readyState !== 4) return
+
+      const screenshot = webcam.getScreenshot()
       if (screenshot && socketRef.current) {
         const base64 = screenshot.split(',')[1]
         if (base64) {
@@ -63,7 +73,7 @@ export function useWebcam() {
         intervalRef.current = null
       }
     }
-  }, [isStreaming, confidence, fpsLimit])
+  }, [isStreaming, confidence, fpsLimit, webcamReady])
 
   useEffect(() => {
     return () => {
@@ -84,6 +94,8 @@ export function useWebcam() {
     fpsLimit,
     setFpsLimit,
     processingTime,
+    webcamReady,
+    onWebcamReady,
     startStreaming,
     stopStreaming,
   }

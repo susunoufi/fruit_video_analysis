@@ -2,6 +2,7 @@ import { memo } from 'react'
 
 function DetectionControlsInner({
   isStreaming,
+  webcamReady,
   confidence,
   setConfidence,
   fpsLimit,
@@ -9,6 +10,7 @@ function DetectionControlsInner({
   onStart,
   onStop,
 }) {
+  const canStart = webcamReady && !isStreaming
   return (
     <div className="bg-card-dark rounded-xl p-4 border border-border-dark flex flex-col gap-2">
       <div className="flex justify-between items-center mb-2 px-2">
@@ -16,9 +18,9 @@ function DetectionControlsInner({
         <div className="flex gap-2">
           <button
             onClick={onStart}
-            disabled={isStreaming}
+            disabled={!canStart}
             className={`flex items-center justify-center rounded-lg h-9 px-4 text-sm font-bold transition-opacity ${
-              isStreaming
+              !canStart
                 ? 'bg-primary/40 text-background-dark/60 cursor-not-allowed'
                 : 'bg-primary text-background-dark hover:bg-primary/90'
             }`}
