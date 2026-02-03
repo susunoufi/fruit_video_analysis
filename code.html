@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Fruit Detection &amp; Nutrition Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#25f46a",
+                        "background-light": "#f5f8f6",
+                        "background-dark": "#102216",
+                        "card-dark": "#1a2e21",
+                        "border-dark": "#22492f"
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #22492f;
+            border-radius: 10px;
+        }
+        .bounding-box {
+            border: 2px solid #25f46a;
+            box-shadow: 0 0 10px rgba(37, 244, 106, 0.4);
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white min-h-screen flex flex-col">
+<!-- Top Navigation Bar -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-border-dark px-10 py-3 bg-white dark:bg-background-dark sticky top-0 z-50">
+<div class="flex items-center gap-4">
+<div class="size-8 text-primary">
+<svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M12.0799 24L4 19.2479L9.95537 8.75216L18.04 13.4961L18.0446 4H29.9554L29.96 13.4961L38.0446 8.75216L44 19.2479L35.92 24L44 28.7521L38.0446 39.2479L29.96 34.5039L29.9554 44H18.0446L18.04 34.5039L9.95537 39.2479L4 28.7521L12.0799 24Z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+<h2 class="text-xl font-bold leading-tight tracking-tight">Fruit Detection &amp; Nutrition</h2>
+</div>
+<div class="flex flex-1 justify-end gap-8">
+<nav class="flex items-center gap-9">
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Dashboard</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">History</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Settings</a>
+</nav>
+<button class="flex min-w-[120px] items-center justify-center rounded-lg h-10 px-4 bg-primary text-background-dark text-sm font-bold tracking-tight">
+<span class="truncate">System: Active</span>
+</button>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border-2 border-primary" data-alt="User profile placeholder" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAmBVhuazZhDlBU3nLi1pC6c--7y1Ob1JxnHDt5LaRJA3ZOru8T83_8YqNpyNJMXrBQZ8RDNRi5AHKoYemcDDrPgzpXUChf2hx2h_L9F3Ki-BiGfLyvC_Rqll7EpfT8lEM-LFaue3IH45_HQ2bFWAkafY7Syo-p2ddjfGyTEAG1zS7XgK-xRkSiOhz5elybRwXcoTGaOrrYaseYFhBhH-YN85AbN6pDkTA6T0e-c-6LyW3i5MeeOxDRptHZZdXfp8YTWVO5emsPWFUD");'></div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 flex overflow-hidden p-6 gap-6 max-w-[1600px] mx-auto w-full">
+<!-- Left Column: Webcam Feed & Controls -->
+<div class="flex-[2] flex flex-col gap-4 min-w-0">
+<!-- Media Player / Webcam Feed -->
+<div class="relative bg-slate-900 rounded-xl overflow-hidden aspect-video border border-border-dark group">
+<div class="absolute inset-0 bg-cover bg-center opacity-80" data-alt="Live webcam feed showing a kitchen counter with apples and bananas" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD27zoxzbzPJ4EreEHKwQClfdzQQsix6abCirnIasiqVHmBM6KcLCt1GDMpqXagt0bsBd9-PA-czAQmDfCXUxLyVcvqE2tltquFBJlPyL_JzXQ8LgZJwaFJvelDa0ogaPy7Ej7vG_QKAW0LG1EO3tOdI1ptBhWjfo3OOh1WsX7KysrQu-G_DJ342ZoJP8dVQO99yk4tCuV3uWXlAVbM4GAcDA5OKSzLGxOmrmv5FrAv6OXv3t8q10Pb2sWG9CDOHYvaC29ysbujhW_V");'></div>
+<!-- Bounding Box Overlays (YOLOv8 Simulation) -->
+<div class="absolute top-[20%] left-[15%] w-[180px] h-[180px] bounding-box rounded-lg flex flex-col">
+<span class="bg-primary text-background-dark px-2 py-0.5 text-xs font-bold w-fit">Apple 0.98</span>
+</div>
+<div class="absolute top-[45%] left-[50%] w-[220px] h-[120px] bounding-box rounded-lg flex flex-col">
+<span class="bg-primary text-background-dark px-2 py-0.5 text-xs font-bold w-fit">Banana 0.94</span>
+</div>
+<!-- Overlay Controls -->
+<div class="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/40 transition-all opacity-0 group-hover:opacity-100">
+<button class="flex items-center justify-center rounded-full size-20 bg-primary text-background-dark shadow-xl hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-4xl">pause</span>
+</button>
+</div>
+<div class="absolute bottom-4 left-4 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-md flex items-center gap-2 border border-white/10">
+<div class="size-2 bg-red-500 rounded-full animate-pulse"></div>
+<span class="text-xs font-mono text-white tracking-widest uppercase">Recording 1080p</span>
+</div>
+</div>
+<!-- Controls Panel -->
+<div class="bg-white dark:bg-card-dark rounded-xl p-4 border border-slate-200 dark:border-border-dark flex flex-col gap-2">
+<div class="flex justify-between items-center mb-2 px-2">
+<h3 class="font-bold text-lg">Detection Controls</h3>
+<div class="flex gap-2">
+<button class="flex items-center justify-center rounded-lg h-9 px-4 bg-primary text-background-dark text-sm font-bold">
+<span class="material-symbols-outlined mr-2 text-sm">play_arrow</span> Start Stream
+                        </button>
+<button class="flex items-center justify-center rounded-lg h-9 px-4 bg-slate-200 dark:bg-border-dark text-slate-700 dark:text-white text-sm font-bold">
+<span class="material-symbols-outlined mr-2 text-sm">stop</span> Stop
+                        </button>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-6">
+<!-- Slider 1 -->
+<div class="@container">
+<div class="relative flex w-full flex-col items-start justify-between gap-2 p-2 @[480px]:flex-row @[480px]:items-center">
+<div class="flex w-full shrink-[3] items-center justify-between">
+<p class="text-sm font-medium">Confidence Threshold</p>
+</div>
+<div class="flex h-4 w-full items-center gap-4">
+<div class="flex h-1.5 flex-1 rounded-full bg-slate-200 dark:bg-border-dark">
+<div class="h-full w-[75%] rounded-full bg-primary"></div>
+<div class="relative"><div class="absolute -left-2 -top-1.5 size-4 rounded-full bg-primary border-2 border-background-dark"></div></div>
+</div>
+<p class="text-sm font-bold text-primary">0.75</p>
+</div>
+</div>
+</div>
+<!-- Slider 2 -->
+<div class="@container">
+<div class="relative flex w-full flex-col items-start justify-between gap-2 p-2 @[480px]:flex-row @[480px]:items-center">
+<div class="flex w-full shrink-[3] items-center justify-between">
+<p class="text-sm font-medium">FPS Limit</p>
+</div>
+<div class="flex h-4 w-full items-center gap-4">
+<div class="flex h-1.5 flex-1 rounded-full bg-slate-200 dark:bg-border-dark">
+<div class="h-full w-[50%] rounded-full bg-primary"></div>
+<div class="relative"><div class="absolute -left-2 -top-1.5 size-4 rounded-full bg-primary border-2 border-background-dark"></div></div>
+</div>
+<p class="text-sm font-bold text-primary">30</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Section: AI Nutritionist Chat -->
+<div class="flex-1 min-h-[300px] flex flex-col bg-white dark:bg-card-dark rounded-xl border border-slate-200 dark:border-border-dark overflow-hidden shadow-lg">
+<div class="bg-slate-50 dark:bg-border-dark/50 p-3 px-6 border-b border-slate-200 dark:border-border-dark flex justify-between items-center">
+<div class="flex items-center gap-3">
+<div class="size-8 rounded-full bg-primary/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">smart_toy</span>
+</div>
+<div>
+<p class="text-sm font-bold leading-none">AI Nutrition Expert</p>
+<span class="text-[10px] uppercase tracking-tighter text-slate-500 dark:text-primary/70">Powered by GPT-4</span>
+</div>
+</div>
+<div class="flex items-center gap-2 bg-primary/10 px-3 py-1 rounded-full border border-primary/20">
+<span class="text-[11px] font-bold text-primary">Context: Apple (1), Banana (1) detected</span>
+</div>
+</div>
+<div class="flex-1 p-6 overflow-y-auto custom-scrollbar flex flex-col gap-4">
+<div class="flex gap-3 max-w-[80%]">
+<div class="size-8 rounded-full bg-slate-200 dark:bg-border-dark flex-shrink-0 flex items-center justify-center">
+<span class="material-symbols-outlined text-sm">smart_toy</span>
+</div>
+<div class="bg-slate-100 dark:bg-border-dark p-3 rounded-xl rounded-tl-none">
+<p class="text-sm">I've detected a fresh Apple and a Banana on your counter. Together, these provide about 200 calories and are excellent sources of dietary fiber and potassium. Would you like a snack suggestion or a full nutrient breakdown?</p>
+</div>
+</div>
+<div class="flex gap-3 max-w-[80%] self-end flex-row-reverse">
+<div class="size-8 rounded-full bg-primary flex-shrink-0 flex items-center justify-center text-background-dark">
+<span class="material-symbols-outlined text-sm">person</span>
+</div>
+<div class="bg-primary/20 dark:bg-primary/10 border border-primary/20 p-3 rounded-xl rounded-tr-none">
+<p class="text-sm">Give me a quick breakdown of the sugar content in these two combined.</p>
+</div>
+</div>
+</div>
+<div class="p-4 bg-slate-50 dark:bg-background-dark/30 border-t border-slate-200 dark:border-border-dark">
+<div class="relative">
+<input class="w-full bg-white dark:bg-border-dark border-slate-200 dark:border-border-dark rounded-lg py-3 px-4 pr-12 focus:ring-primary focus:border-primary text-sm" placeholder="Ask your AI nutritionist..." type="text"/>
+<button class="absolute right-2 top-1.5 size-8 bg-primary text-background-dark rounded-md flex items-center justify-center hover:bg-opacity-80">
+<span class="material-symbols-outlined">send</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Nutrition Panel Sidebar -->
+<aside class="w-[380px] flex flex-col gap-6">
+<!-- Detected Fruits -->
+<div class="bg-white dark:bg-card-dark rounded-xl p-5 border border-slate-200 dark:border-border-dark shadow-sm">
+<div class="flex items-center justify-between mb-4">
+<h3 class="font-bold text-lg flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">inventory_2</span>
+                        Detected Fruits
+                    </h3>
+<span class="text-xs bg-primary/20 text-primary px-2 py-0.5 rounded-full font-bold">2 items</span>
+</div>
+<div class="space-y-3">
+<div class="flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-border-dark border border-slate-100 dark:border-white/5">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-red-500">
+<span class="material-symbols-outlined">nutrition</span>
+</div>
+<div>
+<p class="font-bold text-sm">Red Apple</p>
+<p class="text-xs opacity-60">Fuji variety</p>
+</div>
+</div>
+<p class="font-bold text-primary">x1</p>
+</div>
+<div class="flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-border-dark border border-slate-100 dark:border-white/5">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded bg-yellow-100 dark:bg-yellow-900/30 flex items-center justify-center text-yellow-500">
+<span class="material-symbols-outlined">nutrition</span>
+</div>
+<div>
+<p class="font-bold text-sm">Banana</p>
+<p class="text-xs opacity-60">Cavendish</p>
+</div>
+</div>
+<p class="font-bold text-primary">x1</p>
+</div>
+</div>
+</div>
+<!-- Nutrition Analysis -->
+<div class="flex-1 bg-white dark:bg-card-dark rounded-xl p-5 border border-slate-200 dark:border-border-dark shadow-sm flex flex-col">
+<h3 class="font-bold text-lg flex items-center gap-2 mb-6">
+<span class="material-symbols-outlined text-primary">analytics</span>
+                    Total Nutrition
+                </h3>
+<!-- Macro Breakdown Pie Chart Placeholder -->
+<div class="relative size-48 mx-auto mb-8">
+<svg class="w-full h-full transform -rotate-90" viewbox="0 0 36 36">
+<circle class="stroke-slate-100 dark:stroke-border-dark" cx="18" cy="18" fill="none" r="16" stroke-width="4"></circle>
+<circle class="stroke-primary" cx="18" cy="18" fill="none" r="16" stroke-dasharray="75, 100" stroke-width="4"></circle>
+<circle class="stroke-yellow-400" cx="18" cy="18" fill="none" r="16" stroke-dasharray="15, 100" stroke-dashoffset="-75" stroke-width="4"></circle>
+<circle class="stroke-blue-400" cx="18" cy="18" fill="none" r="16" stroke-dasharray="10, 100" stroke-dashoffset="-90" stroke-width="4"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="text-2xl font-bold">205</span>
+<span class="text-[10px] uppercase opacity-60 tracking-widest">Calories</span>
+</div>
+</div>
+<!-- Legend -->
+<div class="grid grid-cols-3 gap-2 mb-8 text-[11px] font-bold uppercase tracking-tight">
+<div class="flex flex-col items-center gap-1">
+<div class="size-2 rounded-full bg-primary"></div>
+<span>Carbs (75%)</span>
+</div>
+<div class="flex flex-col items-center gap-1">
+<div class="size-2 rounded-full bg-yellow-400"></div>
+<span>Fats (15%)</span>
+</div>
+<div class="flex flex-col items-center gap-1">
+<div class="size-2 rounded-full bg-blue-400"></div>
+<span>Prot (10%)</span>
+</div>
+</div>
+<!-- Vitamins & Minerals -->
+<div class="space-y-4 flex-1">
+<div class="space-y-1">
+<div class="flex justify-between text-xs font-medium">
+<span>Vitamin C</span>
+<span class="text-primary">45% DV</span>
+</div>
+<div class="h-2 w-full bg-slate-100 dark:bg-border-dark rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[45%] rounded-full"></div>
+</div>
+</div>
+<div class="space-y-1">
+<div class="flex justify-between text-xs font-medium">
+<span>Potassium</span>
+<span class="text-primary">18% DV</span>
+</div>
+<div class="h-2 w-full bg-slate-100 dark:bg-border-dark rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[18%] rounded-full"></div>
+</div>
+</div>
+<div class="space-y-1">
+<div class="flex justify-between text-xs font-medium">
+<span>Fiber</span>
+<span class="text-primary">32% DV</span>
+</div>
+<div class="h-2 w-full bg-slate-100 dark:bg-border-dark rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[32%] rounded-full"></div>
+</div>
+</div>
+</div>
+<button class="w-full mt-6 py-3 bg-primary/10 hover:bg-primary/20 text-primary border border-primary/30 rounded-lg text-xs font-bold uppercase tracking-widest transition-colors">
+                    Export Full Report
+                </button>
+</div>
+</aside>
+</main>
+<!-- Footer Status Bar -->
+<footer class="bg-white dark:bg-background-dark border-t border-slate-200 dark:border-border-dark px-10 py-2 flex justify-between items-center">
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-sm opacity-60">memory</span>
+<span class="text-[10px] font-mono opacity-60 uppercase">NVIDIA RTX 4080 (32% Load)</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-sm opacity-60">speed</span>
+<span class="text-[10px] font-mono opacity-60 uppercase">Inference: 14.2ms</span>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-[10px] font-mono opacity-60 uppercase">Latency: 28ms</span>
+<div class="size-1.5 bg-primary rounded-full"></div>
+</div>
+</footer>
+</body></html>

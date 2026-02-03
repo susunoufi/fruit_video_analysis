@@ -1,0 +1,65 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #25f46a;
+  --color-background-light: #f5f8f6;
+  --color-background-dark: #102216;
+  --color-card-dark: #1a2e21;
+  --color-border-dark: #22492f;
+}
+
+body {
+  font-family: 'Space Grotesk', sans-serif;
+  background-color: var(--color-background-dark);
+  color: white;
+  margin: 0;
+  min-height: 100vh;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #22492f;
+  border-radius: 10px;
+}
+
+.bounding-box {
+  border: 2px solid #25f46a;
+  box-shadow: 0 0 10px rgba(37, 244, 106, 0.4);
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 9999px;
+  background: #22492f;
+  outline: none;
+  width: 100%;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #25f46a;
+  border: 2px solid #102216;
+  cursor: pointer;
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #25f46a;
+  border: 2px solid #102216;
+  cursor: pointer;
+}
